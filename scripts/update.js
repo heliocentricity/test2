@@ -59,7 +59,7 @@ async function ensureTeamBaseline() {
   config.baselineLifetime = config.baselineLifetime || {};
   config.baselineTeam     = config.baselineTeam     || {};
 
-  board.forEach(({ username, racesPlayed, played }) => {
+  board.forEach(({ username, racesPlayed, teamPlayed }) => {
     if (! Number.isInteger(config.baselineTeam[username])) {
       const origBaseLifetime = config.baselineLifetime[username] || 0;
       // compute how many lifetime races happened up till now
@@ -68,11 +68,11 @@ async function ensureTeamBaseline() {
       // overwrite baselineLifetime to hold that initial delta
       config.baselineLifetime[username] = initialLifetimeDelta;
       // seed team baseline
-      config.baselineTeam[username] = played;
+      config.baselineTeam[username] = teamPlayed;
 
       console.log(
         `Seeded ${username}: baselineLifetime=${initialLifetimeDelta}, `
-      + `baselineTeam=${played}`
+        + `baselineTeam=${teamPlayed}`
       );
     }
   });
@@ -87,7 +87,7 @@ async function updateData() {
   const board = await fetchLeaderboard();
   const results = board
     .map(u => {
-      const teamDelta = u.played - config.baselineTeam[u.username];
+      const teamDelta = u.teamPlayed - config.baselineTeam[u.username];
       const total     = config.baselineLifetime[u.username] + teamDelta;
       return {
         ...u,
