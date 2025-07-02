@@ -5,8 +5,6 @@ permissions:
   contents: write
 
 on:
-  schedule:
-    - cron: '0 * * * *'     # every hour on the hour
   workflow_dispatch:       # manual trigger
 
 jobs:
