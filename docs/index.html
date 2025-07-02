@@ -185,30 +185,37 @@
       }
       render();
     }
-    document.addEventListener('DOMContentLoaded',()=>{
+    document.addEventListener('DOMContentLoaded', () => {
       ['join','last','races'].forEach(k=>{
         document.getElementById(`th-${k}`)
-          .addEventListener('click',()=>sortBy(k));
+          .addEventListener('click', () => sortBy(k));
       });
-      fetch('data.json').then(r=>r.json()).then(data=>{
-        document.getElementById('updated-at').textContent = data.last_updated||'Unknown';
-        let ld=null, lr=0;
-        rows = data.board.map((it, idx)=>{
-
-        rows = data.board.map((it, idx)=>{
-          const value = it.totalSinceStart || 0; 
-          const rank  = (value !== ld) ? idx+1 : lr; 
-          ld = value; lr = rank; 
-          return { 
-            ...it, 
-            rank, 
-            join: it.joinStamp || 0, 
-            last: it.lastActivity || 0 
-          }; 
+  
+      fetch('data.json')
+        .then(r => r.json())
+        .then(data => {
+          // update timestamp
+          document.getElementById('updated-at').textContent =
+            data.last_updated || 'Unknown';
+  
+          let lastValue = null, lastRank = 0;
+          rows = data.board.map((it, idx) => {
+            const value = it.totalSinceStart || 0;
+            const rank  = (value !== lastValue) ? idx + 1 : lastRank;
+            lastValue = value;
+            lastRank  = rank;
+            return {
+              ...it,
+              rank,
+              join: it.joinStamp    || 0,
+              last: it.lastActivity || 0
+            };
+          });
+  
+          render();
         });
-        render();
-      });
     });
+      
     function render(){
       const tb = document.getElementById('leaderboard');
       tb.innerHTML = '';
