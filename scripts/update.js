@@ -56,33 +56,53 @@ async function ensureBaseline() {
 
 async function ensureTeamBaseline() {
   const board = await fetchLeaderboard();
+  config.baselineLifetime = config.baselineLifetime || {};
+  config.baselineTeam     = config.baselineTeam     || {};
 
-  // make sure config.baselineTeam exists
-  config.baselineTeam = config.baselineTeam || {};
-
-  board.forEach(({ username, teamPlayed }) => {
-    // only set the baseline if it is not already an integer
+  board.forEach(({ username, racesPlayed, played }) => {
     if (! Number.isInteger(config.baselineTeam[username])) {
-      config.baselineTeam[username] = teamPlayed;
-      console.log(`TeamBaseline[${username}] = ${teamPlayed}`);
+      const origBaseLifetime = config.baselineLifetime[username] || 0;
+      // compute how many lifetime races happened up till now
+      const initialLifetimeDelta = racesPlayed - origBaseLifetime;
+
+      // overwrite baselineLifetime to hold that initial delta
+      config.baselineLifetime[username] = initialLifetimeDelta;
+      // seed team baseline
+      config.baselineTeam[username] = played;
+
+      console.log(
+        `Seeded ${username}: baselineLifetime=${initialLifetimeDelta}, `
+      + `baselineTeam=${played}`
+      );
     }
   });
 
-  fs.writeFileSync(CONFIG_PATH,
-    JSON.stringify(config, null, 2));
+  fs.writeFileSync(
+    CONFIG_PATH,
+    JSON.stringify(config, null, 2)
+  );
 }
 
 async function updateData() {
-  const board  = await fetchLeaderboard();
+  const board = await fetchLeaderboard();
   const results = board
-    .map(u => ({
-      ...u,
-      lifetimeDelta: u.lifetimePlayed   - config.baselineLifetime[u.username],
-      teamDelta:     u.teamPlayed       - config.baselineTeam[u.username]
-    }))
-    .sort((a,b) => b.teamDelta - a.teamDelta);
+    .map(u => {
+      const teamDelta = u.played - config.baselineTeam[u.username];
+      const total     = config.baselineLifetime[u.username] + teamDelta;
+      return {
+        ...u,
+        teamDelta,
+        totalSinceStart: total
+      };
+    })
+    .sort((a, b) => b.totalSinceStart - a.totalSinceStart);
 
-  results.forEach(r => console.log(`TeamDelta[${r.username}] = ${r.teamDelta}`));
+  results.forEach(r =>
+    console.log(
+      `${r.username}: teamDelta=${r.teamDelta}, `
+    + `totalSinceStart=${r.totalSinceStart}`
+    )
+  );
 
   // PST timestamp
   const now = new Date();
@@ -108,7 +128,6 @@ async function updateData() {
 
 (async () => {
   try {
-    await ensureBaseline();
     await ensureTeamBaseline();
     await updateData();
   } catch (err) {
