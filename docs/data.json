@@ -1,7 +1,7 @@
 {
   "TEAM_NAME": "HELIOS",
   "START_DATE": "2025-06-24",
-  "last_updated": "July 1, 2025 at 10:21 PM PDT",
+  "last_updated": "July 1, 2025 at 10:32 PM PDT",
   "board": [
     {
       "username": "tryhardwillwork",
@@ -42,14 +42,14 @@
     {
       "username": "aharama",
       "displayName": "Aharama",
-      "racesPlayed": 140983,
-      "teamPlayed": 1796,
+      "racesPlayed": 140998,
+      "teamPlayed": 1809,
       "role": "member",
       "title": "Emperor",
       "joinStamp": 1751010739,
-      "lastActivity": 1751433579,
-      "teamDelta": 0,
-      "totalSinceStart": 1767
+      "lastActivity": 1751434171,
+      "teamDelta": 13,
+      "totalSinceStart": 1780
     },
     {
       "username": "neiletsky",
@@ -114,14 +114,26 @@
     {
       "username": "vioiynx",
       "displayName": "vioiynx",
-      "racesPlayed": 3612,
-      "teamPlayed": 3612,
+      "racesPlayed": 3620,
+      "teamPlayed": 3619,
       "role": "vicecaptain",
       "title": "Oh Em Gee!",
       "joinStamp": 1742509283,
-      "lastActivity": 1751396421,
-      "teamDelta": 0,
-      "totalSinceStart": 463
+      "lastActivity": 1751434181,
+      "teamDelta": 7,
+      "totalSinceStart": 470
+    },
+    {
+      "username": "a_normal_snake",
+      "displayName": "-Snake-",
+      "racesPlayed": 3328,
+      "teamPlayed": 411,
+      "role": "member",
+      "title": "I Love Dogs",
+      "joinStamp": 1751144117,
+      "lastActivity": 1751433664,
+      "teamDelta": 2,
+      "totalSinceStart": 392
     },
     {
       "username": "ryyedawg7",
@@ -134,18 +146,6 @@
       "lastActivity": 1751422724,
       "teamDelta": 0,
       "totalSinceStart": 391
-    },
-    {
-      "username": "a_normal_snake",
-      "displayName": "-Snake-",
-      "racesPlayed": 3328,
-      "teamPlayed": 409,
-      "role": "member",
-      "title": "I Love Dogs",
-      "joinStamp": 1751144117,
-      "lastActivity": 1751433579,
-      "teamDelta": 0,
-      "totalSinceStart": 390
     },
     {
       "username": "timmytimmy213",
