@@ -54,16 +54,35 @@ async function ensureBaseline() {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
 }
 
+async function ensureTeamBaseline() {
+  const board = await fetchLeaderboard();
+
+  // make sure config.baselineTeam exists
+  config.baselineTeam = config.baselineTeam || {};
+
+  board.forEach(({ username, teamPlayed }) => {
+    // only set the baseline if it is not already an integer
+    if (! Number.isInteger(config.baselineTeam[username])) {
+      config.baselineTeam[username] = teamPlayed;
+      console.log(`TeamBaseline[${username}] = ${teamPlayed}`);
+    }
+  });
+
+  fs.writeFileSync(CONFIG_PATH,
+    JSON.stringify(config, null, 2));
+}
+
 async function updateData() {
   const board  = await fetchLeaderboard();
   const results = board
     .map(u => ({
       ...u,
-      delta: u.racesPlayed - config.baseline[u.username]
+      lifetimeDelta: u.lifetimePlayed   - config.baselineLifetime[u.username],
+      teamDelta:     u.teamPlayed       - config.baselineTeam[u.username]
     }))
-    .sort((a,b) => b.delta - a.delta);
+    .sort((a,b) => b.teamDelta - a.teamDelta);
 
-  results.forEach(r => console.log(`Delta[${r.username}] = ${r.delta}`));
+  results.forEach(r => console.log(`TeamDelta[${r.username}] = ${r.teamDelta}`));
 
   // PST timestamp
   const now = new Date();
@@ -90,6 +109,7 @@ async function updateData() {
 (async () => {
   try {
     await ensureBaseline();
+    await ensureTeamBaseline();
     await updateData();
   } catch (err) {
     console.error(err);
