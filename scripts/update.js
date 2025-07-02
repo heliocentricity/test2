@@ -33,6 +33,7 @@ async function fetchLeaderboard() {
     username:     m.username,
     displayName:  m.displayName,
     racesPlayed:  m.racesPlayed,
+    teamPlayed:   m.played,
     role,                    // officer|captain|member
     title:         m.title,  // title under name
     joinStamp:     m.joinStamp,
