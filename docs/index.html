@@ -178,10 +178,11 @@
       document.getElementById(`th-${key}`)
         .querySelector('span').textContent = sortStates[key]?'▲':'▼';
       const dir = sortStates[key]?1:-1;
-      rows.sort((a,b)=>{
-        if(key==='races') return dir*(a.delta-b.delta);
-        return dir*(a[key]-b[key]);
-      });
+      if (key === 'races') {
+        rows.sort((a,b)=> dir * ((a.totalSinceStart||0) - (b.totalSinceStart||0)));
+      } else {
+        rows.sort((a,b)=> dir * (a[key] - b[key]));
+      }
       render();
     }
     document.addEventListener('DOMContentLoaded',()=>{
@@ -193,9 +194,17 @@
         document.getElementById('updated-at').textContent = data.last_updated||'Unknown';
         let ld=null, lr=0;
         rows = data.board.map((it, idx)=>{
-          const rank=(it.delta!==ld)?idx+1:lr;
-          ld=it.delta; lr=rank;
-          return {...it,rank,join:it.joinStamp||0,last:it.lastActivity||0};
+
+        rows = data.board.map((it, idx)=>{
+          const value = it.totalSinceStart || 0; 
+          const rank  = (value !== ld) ? idx+1 : lr; 
+          ld = value; lr = rank; 
+          return { 
+            ...it, 
+            rank, 
+            join: it.joinStamp || 0, 
+            last: it.lastActivity || 0 
+          }; 
         });
         render();
       });
@@ -241,7 +250,7 @@
           </td>
           <td class="px-4 py-3">${jd}</td>
           <td class="px-4 py-3">${ld2}</td>
-          <td class="px-4 py-3 text-right">${it.delta||0}</td>
+          <td class="px-4 py-3 text-right">${it.totalSinceStart||0}</td>
         `;
         tb.appendChild(tr);
       });
